@@ -9,7 +9,12 @@
   "author": "Rodrigo Figueroa",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "mongodb": "^3.1.1"
+    "mongodb": "^3.1.1",
+    "node-fetch": "^2.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.1"
   }
 }
