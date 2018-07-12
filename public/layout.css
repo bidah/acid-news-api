@@ -1,0 +1,12 @@
+.jumbotron {
+  margin-bottom: 0;
+}
+
+.trash {
+  float: right;
+}
+
+.created-at {
+  float: right;
+  margin-right: 80px;
+}
