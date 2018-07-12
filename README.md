@@ -10,8 +10,9 @@ mongod
 ```
 
 2. Install project dependencies
-
-`npm install`
+```
+npm install
+```
 
 3. Finally start app
 
