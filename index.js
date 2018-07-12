@@ -2,10 +2,10 @@ const bodyParser = require("body-parser");
 const app        = require("express")();
 const fetch      = require("node-fetch");
 const path       = require('path');
-const moment = require('moment');
-const mongo = require("./mongo");
+const moment     = require('moment');
+const mongo      = require("./mongo");
 
-const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
+const apiUrl     = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,6 +75,15 @@ app.get("*/setData", async (req, res) => {
 
   res.json({ status: "ok", msg: "data inserted to db", "data": newsFeedFromDb.ops });
 });
+
+app.get("*/delete/:itemId", async (req, res) => {
+
+    await mongo.deleteItem(req.params.itemId).catch(err => {
+      console.log('error: ', err)
+    })
+
+    res.redirect('/')
+})
 
 app.get("*/", async (req, res) => {
 
