@@ -7,25 +7,23 @@ app.listen(3000, () => console.log("Server ready"));
 
 const mongo = require("./mongo");
 
-// var mongo = require("./mongo");
-//
 const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 let getNewsFeed = async () => {
   // setInterval(()=> {
   let jsonRes = await fetch(apiUrl).then(res => res.json());
   // })
-  return jsonRes;
+  return jsonRes.hits;
 } 
 
 app.get("*/setData", async (req, res) => {
 
-  let newsFeedJson = await this.getNewsFeed();
+  let newsFeedJson = await getNewsFeed();
 
   let newsFeedFromDb  = await mongo.setInitial(newsFeedJson)
 
   if (typeof newsFeedFromDb == "string")
-    return res.json({ status: "error", msg: res });
+    return res.json({ status: "error", msg: newsFeedFromDb });
 
   // success
   res.json({ status: "ok", newsFeedFromDb });
