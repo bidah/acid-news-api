@@ -9,11 +9,11 @@ To star project you need to have mongo installed on your local machine:
 mongod
 ```
 
-1. Install project dependencies
+2. Install project dependencies
 
 `npm install`
 
-1. Finally start app
+3. Finally start app
 
 ```
 npm start
