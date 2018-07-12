@@ -9,9 +9,19 @@
 .created-at {
   float: right;
   margin-right: 80px;
+  margin-left: auto;
 }
 
-a.list-group-item--changes {
+.list-group-item--changes a {
+  color: #333;
+}
+
+.list-group-item--changes {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-start;
+
   border: 1px solid #ccc;
   color: #333;
   font-size: 13pt;
