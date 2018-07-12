@@ -7,6 +7,6 @@ block content
     h2 We <3 hacker news!
 
   .list-group
-      each item in feed
-        a(class='list-group-item' href='/') Boolean(item) ? item.title : 'no title'
+    each item in feed
+      a(class='list-group-item' href='/') #{!!item.title ? item.title : 'no title'}
 
