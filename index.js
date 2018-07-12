@@ -69,8 +69,21 @@ let prettyDate = (date) => {
   });
 }
 
+
+let setData = () =>{
+  var counter = 0;
+  return async function () {
+    if(counter) return Promise.resolve('ok');
+    let newsFeedJson    = await getNewsFeed();
+    let newsFeedFromDb  = await mongo.setInitial(newsFeedJson)
+    counter++
+    console.log('set data only once')
+  }
+}
+
 // routes
 app.get("*/health", (req, res) => res.sendStatus(200));
+
 
 app.get("*/setData", async (req, res) => {
 
@@ -92,7 +105,10 @@ app.get("*/delete/:itemId", async (req, res) => {
     res.redirect('/')
 })
 
+let refSetData = setData();
 app.get("*/", async (req, res) => {
+    
+    await refSetData();
 
     let feed = await mongo.getFeed().catch(err => {
       console.log('error in getFeed --> ', err)
