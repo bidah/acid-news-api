@@ -12,7 +12,6 @@ app.set('view engine', 'pug');
 app.listen(3000, () => console.log("Server ready"));
 
 const mongo = require("./mongo");
-
 const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 let getNewsFeed = async () => {
