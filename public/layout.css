@@ -6,6 +6,14 @@
   float: right;
 }
 
+a.trash {
+  display: flex;
+  align-items: center;
+  font-size: 23px;
+}
+
+a.trash:hover { text-decoration: none }
+
 .created-at {
   float: right;
   margin-right: 80px;
