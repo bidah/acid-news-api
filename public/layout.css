@@ -10,3 +10,7 @@
   float: right;
   margin-right: 80px;
 }
+
+.list-group-item--new-border {
+  border: 1px solid #ccc;
+}
