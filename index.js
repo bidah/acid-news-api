@@ -37,7 +37,6 @@ app.get("*/health", (req, res) => res.sendStatus(200));
 app.get("*/", async (req, res) => {
 
     let feed = await mongo.getFeed();
-    debugger;
     res.render('index', { feed });
 })
 
