@@ -9,4 +9,6 @@ block content
   .list-group
     each item in feed
       a(class='list-group-item' href='/') #{!!item.title ? item.title : 'no title'}
+        .span(style={float: 'right'}) test
+
 
