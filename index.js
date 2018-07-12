@@ -16,6 +16,13 @@ app.set('view engine', 'pug');
 
 app.listen(3000, () => console.log("Server ready"));
 
+(function checkForNewItems() {
+  setInterval(async ()=> {
+    let jsonRes = await fetch(apiUrl).then(res => res.json());
+    await mongo.setNewItems(jsonRes.hits);
+  }, 3600000)
+})()
+
 let filterByTitleAndUrl =(feedArr) => {
   return filterFeedByUrl(filterFeedByTitle(feedArr));
 }
@@ -56,6 +63,7 @@ let getNewsFeed = async () => {
   return jsonRes.hits;
 }
 
+
 let prettyDate = (date) => {
 
   return moment(date).calendar(null, {
@@ -65,6 +73,7 @@ let prettyDate = (date) => {
     sameElse: 'MMM DD'
   });
 }
+
 
 // routes
 app.get("*/health", (req, res) => res.sendStatus(200));
