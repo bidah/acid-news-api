@@ -26,10 +26,10 @@ let prettyDate = (date) => {
   date = moment(date);
 
   let calendarDate = date.calendar(null, {
-    sameDay: 'LT',
+    sameDay: 'h\:mm a',
     lastDay: '[Yesterday]',
-    lastWeek: 'MMMM DD',
-    sameElse: 'MMMM DD'
+    lastWeek: 'MMM DD',
+    sameElse: 'MMM DD'
   });
 
   return calendarDate;
