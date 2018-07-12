@@ -3,20 +3,18 @@ const app        = require("express")();
 const fetch      = require("node-fetch");
 const path       = require('path');
 const moment = require('moment');
+const mongo = require("./mongo");
+
+const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(require("express").static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, 'views')); 
 app.set('view engine', 'pug'); 
 
 app.listen(3000, () => console.log("Server ready"));
-
-const mongo = require("./mongo");
-const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
-
 
 let filterByTitleAndUrl =(feedArr) => {
   return filterFeedByUrl(filterFeedByTitle(feedArr));
@@ -64,6 +62,7 @@ let prettyDate = (date) => {
   });
 }
 
+// routes
 app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/setData", async (req, res) => {
