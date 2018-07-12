@@ -11,6 +11,17 @@
   margin-right: 80px;
 }
 
-.list-group-item--new-border {
+a.list-group-item--changes {
   border: 1px solid #ccc;
+  color: #333;
+  font-size: 13pt;
+}
+
+.list-group-item--changes:hover {
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.list-group-item--changes .author {
+  color: #999;
 }

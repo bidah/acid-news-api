@@ -8,10 +8,11 @@ block content
 
   .list-group
     each item in feed
-      a(class='list-group-item list-group-item--new-border' href= item.url target="_blanc") #{item.title}
+      a(class='list-group-item list-group-item--changes' href= item.url target="_blanc") #{item.title}
         //span(class='glyphicons glyphicons-bin' style={float: 'right'})
         //i(class='fas fa-trash-alt')
 
+        span(class='author') #{ ' - ' + item.author + ' - '}
         span(class='trash') trash
         span(class='created-at') #{ prettyDate(item.created_at) }
 
