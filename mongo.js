@@ -2,21 +2,21 @@ const ObjectId = require("mongodb").ObjectID;
 var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 
-var url = 'mongodb://localhost:27017';
+var URL = 'mongodb://localhost:27017';
 var DB;
 
-MongoClient.connect(url, function(err, db) {
+MongoClient.connect(URL, function(err, db) {
   assert.equal(null, err);
   console.log("Connected correctly to server");
   DB = db.db('db')
 });
 
-const count = 0;
+const COUNT = 0;
 
 module.exports = {
 
   async setInitial(news) {
-    if (count) return;
+    if (COUNT) return;
 
     let newsNum = await DB.collection("newsFeed").count()
 

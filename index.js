@@ -18,16 +18,18 @@ let getNewsFeed = async () => {
 
 app.get("*/setData", async (req, res) => {
 
-  let newsFeedJson = await getNewsFeed();
-
+  let newsFeedJson    = await getNewsFeed();
   let newsFeedFromDb  = await mongo.setInitial(newsFeedJson)
 
   if (typeof newsFeedFromDb == "string")
     return res.json({ status: "error", msg: newsFeedFromDb });
 
-  // success
   res.json({ status: "ok", msg: "data inserted to db", "data": newsFeedFromDb.ops });
 });
 
 app.get("*/health", (req, res) => res.sendStatus(200));
+
+app.get("*/", (req, res) => {
+
+})
 
