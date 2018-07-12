@@ -2,6 +2,7 @@ const bodyParser = require("body-parser");
 const app        = require("express")();
 const fetch      = require("node-fetch");
 const path       = require('path');
+const moment = require('moment');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,7 +23,16 @@ let getNewsFeed = async () => {
 }
 
 let prettyDate = (date) => {
-  return new Date(date).toLocaleString('en-Us', {hour: 'numeric', minute: 'numeric', hour12: true})
+  date = moment(date);
+
+  let calendarDate = date.calendar(null, {
+    sameDay: 'LT',
+    lastDay: '[Yesterday]',
+    lastWeek: 'MMMM DD',
+    sameElse: 'MMMM DD'
+  });
+
+  return calendarDate;
 }
 
 app.get("*/setData", async (req, res) => {
