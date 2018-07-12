@@ -26,7 +26,7 @@ app.get("*/setData", async (req, res) => {
     return res.json({ status: "error", msg: newsFeedFromDb });
 
   // success
-  res.json({ status: "ok", newsFeedFromDb });
+  res.json({ status: "ok", msg: "data inserted to db", "data": newsFeedFromDb.ops });
 });
 
 app.get("*/health", (req, res) => res.sendStatus(200));
