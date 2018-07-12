@@ -9,6 +9,8 @@ block content
   .list-group
     each item in feed
       a(class='list-group-item' href='/') #{!!item.title ? item.title : 'no title'}
-        .span(style={float: 'right'}) test
+        //span(class='glyphicons glyphicons-bin' style={float: 'right'})
+        //i(class='fas fa-trash-alt')
+        span(style={float: 'right'}) trash
 
 
