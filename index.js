@@ -45,6 +45,10 @@ let filterFeedByUrl = (feedArr) => {
     })
 }
 
+// let filterDeletedItems = (feedArr) => {
+//   return feedArr.filter(item => !Boolean(item.userHasDeletedItem))
+// }
+
 let getNewsFeed = async () => {
   // setInterval(()=> {
   let jsonRes = await fetch(apiUrl).then(res => res.json());
