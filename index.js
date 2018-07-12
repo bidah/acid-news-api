@@ -15,6 +15,21 @@ app.listen(3000, () => console.log("Server ready"));
 const mongo = require("./mongo");
 const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
+let filterFeedByTitle = (feedArr) => {
+
+  return feedArr
+    .filter(item => {
+      if(!item.story_title && !item.title) return false
+
+      return true
+    })
+    .map(item => {
+      if(!!item.story_title) item.title = item.story_title;
+
+      return item;
+    })
+}
+
 let getNewsFeed = async () => {
   // setInterval(()=> {
   let jsonRes = await fetch(apiUrl).then(res => res.json());
@@ -32,6 +47,8 @@ let prettyDate = (date) => {
   });
 }
 
+app.get("*/health", (req, res) => res.sendStatus(200));
+
 app.get("*/setData", async (req, res) => {
 
   let newsFeedJson    = await getNewsFeed();
@@ -43,12 +60,10 @@ app.get("*/setData", async (req, res) => {
   res.json({ status: "ok", msg: "data inserted to db", "data": newsFeedFromDb.ops });
 });
 
-app.get("*/health", (req, res) => res.sendStatus(200));
-
-
 app.get("*/", async (req, res) => {
 
     let feed = await mongo.getFeed();
-    res.render('index', { feed, prettyDate });
+
+    res.render('index', { feed: filterFeedByTitle(feed), prettyDate });
 })
 
