@@ -18,15 +18,15 @@ module.exports = {
   async setInitial(news) {
     if (COUNT) return;
 
-    let newsNum = await DB.count()
+    let newsNum = await DB.count();
 
     if (newsNum) return Promise.resolve("already created seed data");
 
-    return await DB.insertMany(news)
+    return await DB.insertMany(news);
   },
 
   getFeed() {
-    return DB.find({}).toArray()
+    return DB.find({}).toArray();
   },
 
   async setNewItems(items){
@@ -39,17 +39,17 @@ module.exports = {
           if(res == null)
             return DB.insertOne(item);
 
-          return Promise.resolve('ok')
+          return Promise.resolve('ok');
         })
 
-      arr.push(promise)
+      arr.push(promise);
     })
 
     let result = await Promise.all(arr);
 
     console.log('setNewItems --> ', result);
 
-    return result
+    return result;
   },
 
   deleteItem(itemId) {

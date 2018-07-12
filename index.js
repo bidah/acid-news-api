@@ -52,14 +52,9 @@ let filterFeedByUrl = (feedArr) => {
     })
 }
 
-// let filterDeletedItems = (feedArr) => {
-//   return feedArr.filter(item => !Boolean(item.userHasDeletedItem))
-// }
-
 let getNewsFeed = async () => {
-  // setInterval(()=> {
+
   let jsonRes = await fetch(apiUrl).then(res => res.json());
-  // })
   return jsonRes.hits;
 }
 
@@ -73,7 +68,6 @@ let prettyDate = (date) => {
     sameElse: 'MMM DD'
   });
 }
-
 
 // routes
 app.get("*/health", (req, res) => res.sendStatus(200));
@@ -92,7 +86,7 @@ app.get("*/setData", async (req, res) => {
 app.get("*/delete/:itemId", async (req, res) => {
 
     await mongo.deleteItem(req.params.itemId).catch(err => {
-      console.log('error: ', err)
+      console.log('error in deleteItem --> ', err)
     })
 
     res.redirect('/')
@@ -100,7 +94,9 @@ app.get("*/delete/:itemId", async (req, res) => {
 
 app.get("*/", async (req, res) => {
 
-    let feed = await mongo.getFeed();
+    let feed = await mongo.getFeed().catch(err => {
+      console.log('error in getFeed --> ', err)
+    });
 
     res.render('index', { feed: filterByTitleAndUrl(feed), prettyDate });
 })
