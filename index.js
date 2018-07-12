@@ -1,8 +1,14 @@
 const bodyParser = require("body-parser");
-const app = require("express")();
-const fetch = require("node-fetch");
+const app        = require("express")();
+const fetch      = require("node-fetch");
+const path       = require('path');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('views', path.join(__dirname, 'views')); 
+app.set('view engine', 'pug'); 
+
 app.listen(3000, () => console.log("Server ready"));
 
 const mongo = require("./mongo");
@@ -30,6 +36,6 @@ app.get("*/setData", async (req, res) => {
 app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/", (req, res) => {
-
+    res.render('index', {});
 })
 
