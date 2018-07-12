@@ -23,5 +23,9 @@ module.exports = {
     if (newsNum) return Promise.resolve("already created seed data");
 
     return await DB.collection("newsFeed").insertMany(news)
+  },
+
+  getFeed() {
+    return DB.collection("newsFeed").find({}).toArray()
   }
 }

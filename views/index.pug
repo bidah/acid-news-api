@@ -1,6 +1,9 @@
 extends ./layout.pug
 
 block content
-
-  h2 It works!
+  .inner
+    h2= 'store'
+    .stores
+      each item in feed
+        li= Boolean(item) ? item.title : 'no title'
 
