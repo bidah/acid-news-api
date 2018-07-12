@@ -7,6 +7,8 @@ const moment = require('moment');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(require("express").static(path.join(__dirname, 'public')));
+
 app.set('views', path.join(__dirname, 'views')); 
 app.set('view engine', 'pug'); 
 

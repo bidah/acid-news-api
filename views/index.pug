@@ -2,7 +2,7 @@ extends ./layout.pug
 
 block content
 
-  .jumbotron(style={'margin-bottom': 0})
+  .jumbotron
     h1 HN Feed
     h2 We <3 hacker news!
 
@@ -11,7 +11,8 @@ block content
       a(class='list-group-item' href= item.url target="_blanc") #{item.title}
         //span(class='glyphicons glyphicons-bin' style={float: 'right'})
         //i(class='fas fa-trash-alt')
-        span(style={float: 'right'}) trash
-        span(style={float: 'right', 'margin-right': '70px'}) #{ prettyDate(item.created_at) }
+
+        span(class='trash') trash
+        span(class='created-at') #{ prettyDate(item.created_at) }
 
 
