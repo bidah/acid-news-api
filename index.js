@@ -23,16 +23,13 @@ let getNewsFeed = async () => {
 }
 
 let prettyDate = (date) => {
-  date = moment(date);
 
-  let calendarDate = date.calendar(null, {
+  return moment(date).calendar(null, {
     sameDay: 'h\:mm a',
     lastDay: '[Yesterday]',
     lastWeek: 'MMM DD',
     sameElse: 'MMM DD'
   });
-
-  return calendarDate;
 }
 
 app.get("*/setData", async (req, res) => {
