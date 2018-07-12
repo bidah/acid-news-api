@@ -19,7 +19,11 @@ let getNewsFeed = async () => {
   let jsonRes = await fetch(apiUrl).then(res => res.json());
   // })
   return jsonRes.hits;
-} 
+}
+
+let prettyDate = (date) => {
+  return new Date(date).toLocaleString('en-Us', {hour: 'numeric', minute: 'numeric', hour12: true})
+}
 
 app.get("*/setData", async (req, res) => {
 
@@ -34,9 +38,10 @@ app.get("*/setData", async (req, res) => {
 
 app.get("*/health", (req, res) => res.sendStatus(200));
 
+
 app.get("*/", async (req, res) => {
 
     let feed = await mongo.getFeed();
-    res.render('index', { feed });
+    res.render('index', { feed, prettyDate });
 })
 
