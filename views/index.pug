@@ -1,9 +1,12 @@
 extends ./layout.pug
 
 block content
-  .inner
-    h2= 'store'
-    .stores
+
+  .jumbotron
+    h1 HN Feed
+    h2 We <3 hacker news!
+
+  .list-group
       each item in feed
-        li= Boolean(item) ? item.title : 'no title'
+        a(class='list-group-item' href='/') Boolean(item) ? item.title : 'no title'
 
