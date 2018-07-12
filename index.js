@@ -15,6 +15,11 @@ app.listen(3000, () => console.log("Server ready"));
 const mongo = require("./mongo");
 const apiUrl = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
+
+let filterByTitleAndUrl =(feedArr) => {
+  return filterFeedByUrl(filterFeedByTitle(feedArr));
+}
+
 let filterFeedByTitle = (feedArr) => {
 
   return feedArr
@@ -25,6 +30,16 @@ let filterFeedByTitle = (feedArr) => {
     })
     .map(item => {
       if(!!item.story_title) item.title = item.story_title;
+
+      return item;
+    })
+}
+
+let filterFeedByUrl = (feedArr) => {
+
+  return feedArr
+    .map(item => {
+      if(!!item.story_url) item.url = item.story_url;
 
       return item;
     })
@@ -64,6 +79,6 @@ app.get("*/", async (req, res) => {
 
     let feed = await mongo.getFeed();
 
-    res.render('index', { feed: filterFeedByTitle(feed), prettyDate });
+    res.render('index', { feed: filterByTitleAndUrl(feed), prettyDate });
 })
 
