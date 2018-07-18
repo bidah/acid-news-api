@@ -105,7 +105,7 @@ app.get("*/delete/:itemId", async (req, res) => {
     res.redirect('/')
 })
 
-let refSetData = setData();
+let refSetData = setData().catch(e => console.log('refSetData error -->', e))
 app.get("*/", async (req, res) => {
     
     await refSetData();
