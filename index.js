@@ -117,3 +117,5 @@ app.get("*/", async (req, res) => {
     res.render('index', { feed: filterByTitleAndUrl(feed), prettyDate });
 })
 
+console.log('process env: ', process.env.NODE_ENV)
+
