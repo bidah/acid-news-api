@@ -5,6 +5,9 @@ var MongoClient = require('mongodb').MongoClient
 var URL = 'mongodb://localhost:27017';
 var DB;
 
+if(process.env.NODE_ENV == 'production')
+  URL = 'mongodb://admin:admin3899@ds239911.mlab.com:39911/hacker-news';
+
 MongoClient.connect(URL, function(err, db) {
   assert.equal(null, err);
   console.log("Connected correctly to server");
