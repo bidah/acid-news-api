@@ -11,7 +11,11 @@ if(process.env.NODE_ENV == 'production')
 MongoClient.connect(URL, function(err, db) {
   assert.equal(null, err);
   console.log("Connected correctly to server");
-  DB = db.db('db').collection("newsFeed")
+  if(process.env.NODE_ENV == 'production') {
+    DB = db.db('hacker-news').collection("newsFeed") 
+  } else {
+    DB = db.db('db').collection("newsFeed")
+  }
 });
 
 const COUNT = 0;
