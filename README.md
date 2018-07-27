@@ -1,7 +1,8 @@
 # Hacker News Clone
 
+You can check a live demo of the app here <http://hacker-news-bidah.now.sh>
 
-To star project you need to have mongo installed on your local machine:
+To start project you need to have mongo installed on your local machine:
 
 1. Run MongoDB in your local machine with:
 
