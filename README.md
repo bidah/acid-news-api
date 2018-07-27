@@ -1,6 +1,4 @@
-# Hacker News Clone
-
-You can check a live demo of the app here <http://hacker-news-bidah.now.sh>
+# Hacker News API
 
 To start project you need to have mongo installed on your local machine:
 
