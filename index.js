@@ -3,6 +3,7 @@ const app           = require("express")();
 const fetch         = require("node-fetch");
 const redis         = require('redis');
 const { promisify } = require('util');
+const filter        = require('./filterFeed');
 
 const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
@@ -49,35 +50,6 @@ var checkForNewItems = () => {
   }, 3600000)
 }
 
-let filterByTitleAndUrl = (feedArr) => {
-  return filterFeedByUrl(filterFeedByTitle(feedArr));
-}
-
-let filterFeedByTitle = (feedArr) => {
-
-  return feedArr
-    .filter(item => {
-      if(!item.story_title && !item.title) return false
-
-      return true
-    })
-    .map(item => {
-      if(!!item.story_title) item.title = item.story_title;
-
-      return item;
-    })
-}
-
-let filterFeedByUrl = (feedArr) => {
-
-  return feedArr
-    .map(item => {
-      if(!!item.story_url) item.url = item.story_url;
-
-      return item;
-    })
-}
-
 let getNewsFeed = async () => {
 
   return await handleErrors(
@@ -101,9 +73,9 @@ app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/getData", async (req, res) => {
 
-  let feed = await handleErrors(redisClientGet('news-feed'))
+  let feed = await handleErrors(redisClientGet('news-feed')).then(res => JSON.parse(res))
 
-  res.json({status: 'ok', res: filterByTitleAndUrl(JSON.parse(feed))})
+  res.json({status: 'ok', res: filter({item: feed, byTitle: true, byUrl: true})})
 })
 
 console.log('process env: ', process.env.NODE_ENV)
