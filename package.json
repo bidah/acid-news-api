@@ -1,7 +1,7 @@
 {
-  "name": "hacker-news",
+  "name": "hacker-news-api",
   "version": "1.0.0",
-  "description": "Hacker news demo",
+  "description": "hacker news api with redis cache",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

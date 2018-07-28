@@ -6,7 +6,7 @@ const { promisify } = require('util');
 
 const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
-const redisClient = redis.createClient({host : 'localhost', port : 6379});
+const redisClient    = redis.createClient({host : 'localhost', port : 6379});
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
 const redisClientSet = promisify(redisClient.set).bind(redisClient)
 
@@ -21,9 +21,9 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
-let handleErrors = (fn) => fn.catch((e) => console.log('Promise error: ', e))
-
 app.listen(3001, () => console.log("Server ready"));
+
+let handleErrors = (fn) => fn.catch((e) => console.log('Promise error: ', e))
 
 redisClient.on('ready', async () => {
 
