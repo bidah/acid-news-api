@@ -9,12 +9,20 @@ const apiUrl     = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(require("express").static(path.join(__dirname, 'public')));
 
-app.set('views', path.join(__dirname, 'views')); 
-app.set('view engine', 'pug'); 
+app.all("/*", function(req, res, next) {
 
-app.listen(3000, () => console.log("Server ready"));
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.setHeader(
+    "Access-Control-Allow-Headers, x-auth-token, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+  );
+
+  next();
+});
+
+app.listen(3001, () => console.log("Server ready"));
 
 (function checkForNewItems() {
   setInterval(async ()=> {
@@ -105,7 +113,7 @@ app.get("*/delete/:itemId", async (req, res) => {
 })
 
 let refSetData = setData()
-app.get("*/", async (req, res) => {
+app.get("*/getData", async (req, res) => {
     
     await refSetData();
 
@@ -113,7 +121,7 @@ app.get("*/", async (req, res) => {
       console.log('error in getFeed --> ', err)
     });
 
-    res.render('index', { feed: filterByTitleAndUrl(feed), prettyDate });
+    res.json({status: 'ok', res: filterByTitleAndUrl(feed)})
 })
 
 console.log('process env: ', process.env.NODE_ENV)
