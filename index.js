@@ -1,11 +1,12 @@
-const bodyParser = require("body-parser");
-const app        = require("express")();
-const fetch      = require("node-fetch");
-const path       = require('path');
-const moment     = require('moment');
-const mongo      = require("./mongo");
-
-const apiUrl     = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
+const bodyParser  = require("body-parser");
+const app         = require("express")();
+const fetch       = require("node-fetch");
+const path        = require('path');
+const moment      = require('moment');
+const redis       = require('redis');
+const mongo       = require("./mongo");
+const apiUrl      = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
+const redisClient = redis.createClient({host : 'localhost', port : 6379});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,11 @@ app.all("/*", function(req, res, next) {
 
 app.listen(3001, () => console.log("Server ready"));
 
+redisClient.on('ready',() => {
+ console.log("Redis is ready");
+ redisClient.set('testing', JSON.stringify({one: 1}))
+});
+
 (function checkForNewItems() {
   setInterval(async ()=> {
     let jsonRes = await fetch(apiUrl).then(res => res.json());
@@ -31,7 +37,7 @@ app.listen(3001, () => console.log("Server ready"));
   }, 3600000)
 })()
 
-let filterByTitleAndUrl =(feedArr) => {
+let filterByTitleAndUrl = (feedArr) => {
   return filterFeedByUrl(filterFeedByTitle(feedArr));
 }
 
@@ -78,7 +84,7 @@ let prettyDate = (date) => {
 }
 
 
-let setData = () =>{
+let setData = () => {
   var counter = 0;
   return async function () {
     if(counter) return Promise.resolve('ok');

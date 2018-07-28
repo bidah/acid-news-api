@@ -10,14 +10,15 @@
   "author": "Rodrigo Figueroa",
   "license": "ISC",
   "dependencies": {
-    "serve": "latest",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "moment": "^2.22.2",
     "mongodb": "^3.1.1",
     "node-fetch": "^2.1.2",
     "path": "^0.12.7",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "redis": "^2.8.0",
+    "serve": "latest"
   },
   "devDependencies": {
     "nodemon": "^1.18.1"
