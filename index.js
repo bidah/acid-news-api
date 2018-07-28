@@ -63,6 +63,7 @@ let getNewsFeed = async () => {
 let setData = async () => {
 
   let newsFeedJson = await handleErrors(getNewsFeed());
+
   await handleErrors(
     redisClientSet('news-feed', newsFeedJson)
   )
@@ -77,6 +78,22 @@ app.get("*/getData", async (req, res) => {
   let feed = await handleErrors(redisClientGet('news-feed')).then(res => JSON.parse(res))
 
   res.json({status: 'ok', res: filter({item: feed, byTitle: true, byUrl: true})})
+})
+
+app.get("*/item/points/:id", async (req, { props: {id} } = res) => {
+
+  let redisPoints = await redisClientGet(id)
+
+  if (redisPoints != null)
+    return res.json({status: 'ok', res: redisPoints})
+
+  let points = await fetch('http://hn.algolia.com/api/v1/items/' + id)
+    .then(res => res.json())
+    .then(resJson => resJson.points)
+
+  await redisClientSet(id, points, 'NX', 'EX', 300)
+  redisPoints = await redisClientGet(id)
+  res.json({status: 'ok', res: redisPoints})
 })
 
 console.log('process env: ', process.env.NODE_ENV)
