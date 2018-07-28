@@ -9,17 +9,23 @@ const apiUrl      = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 const redisClient = redis.createClient({host : 'localhost', port : 6379});
 const { promisify } = require('util');
 
-const redisClientGet = promisify(redisClient.get)
+const redisClientGet = promisify(redisClient.get).bind(redisClient)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all("/*", function(req, res, next) {
+  res.setHeader(
+    "X-AUTH-TOKEN",
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
   res.setHeader(
+    "Access-Control-Allow-Headers",
     "Access-Control-Allow-Headers, x-auth-token, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
   );
 
@@ -36,8 +42,8 @@ redisClient.on('ready',() => {
 var checkForNewItems = () => {
   setInterval(async () => {
 
-    let apiResNewsFeed = await fetch(apiUrl).then(res => res.json());
     let redisNewsFeed = await redisClientGet('news-feed')
+    let apiResNewsFeed = await fetch(apiUrl).then(res => res.json());
 
     if (JSON.stringify(jsonRes) != redisNewsFeed)
       setData();
@@ -102,8 +108,9 @@ app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/getData", async (req, res) => {
     
-    let feed = await redisClientGet('news-feed')
-    res.json({status: 'ok', res: filterByTitleAndUrl(feed)})
+    let feed = await redisClientGet('news-feed').catch((err) => console.log('getData redisClientGet error: ', err))
+    
+    res.json({status: 'ok', res: filterByTitleAndUrl(JSON.parse(feed))})
 })
 
 console.log('process env: ', process.env.NODE_ENV)
