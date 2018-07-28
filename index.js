@@ -40,9 +40,13 @@ var checkForNewItems = () => {
   setInterval(async () => {
 
     let redisNewsFeed = await handleErrors(redisClientGet('news-feed'))
-    let apiResNewsFeed = await handleErrors(fetch(apiUrl).then(res => res.json()))
+    let apiNewsFeed = await handleErrors(
+      fetch(apiUrl)
+        .then(res => res.json())
+        .then(resJson => JSON.stringify(resJson))
+    )
 
-    if (JSON.stringify(jsonRes) != redisNewsFeed)
+    if (apiNewsFeed != redisNewsFeed)
       setData();
 
   }, 3600000)
