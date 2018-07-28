@@ -76,8 +76,11 @@ let filterFeedByUrl = (feedArr) => {
 
 let getNewsFeed = async () => {
 
-  let jsonRes = await fetch(apiUrl).then(res => res.json());
-  return jsonRes.hits;
+  return await handleErrors(
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(resJson => resJson.hits)
+  )
 }
 
 let prettyDate = (date) => {
