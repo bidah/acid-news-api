@@ -1,14 +1,15 @@
-const bodyParser  = require("body-parser");
-const app         = require("express")();
-const fetch       = require("node-fetch");
-const path        = require('path');
-const moment      = require('moment');
-const redis       = require('redis');
-const mongo       = require("./mongo");
-const apiUrl      = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
-const redisClient = redis.createClient({host : 'localhost', port : 6379});
+const bodyParser    = require("body-parser");
+const app           = require("express")();
+const fetch         = require("node-fetch");
+const path          = require('path');
+const moment        = require('moment');
+const redis         = require('redis');
+const mongo         = require("./mongo");
 const { promisify } = require('util');
 
+const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
+
+const redisClient = redis.createClient({host : 'localhost', port : 6379});
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
 
 app.use(bodyParser.json());
@@ -22,6 +23,8 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
+let handleErrors = (fn) => fn.catch((e) => console.log('promise error: ', e))
+
 app.listen(3001, () => console.log("Server ready"));
 
 redisClient.on('ready',() => {
@@ -30,17 +33,17 @@ redisClient.on('ready',() => {
 });
 
 var checkForNewItems = () => {
+
   setInterval(async () => {
 
-    let redisNewsFeed = await redisClientGet('news-feed')
-    let apiResNewsFeed = await fetch(apiUrl).then(res => res.json());
+    let redisNewsFeed = await handleErrors(redisClientGet('news-feed'))
+    let apiResNewsFeed = await handleErrors(fetch(apiUrl).then(res => res.json()))
 
     if (JSON.stringify(jsonRes) != redisNewsFeed)
       setData();
 
   }, 3600000)
 }
-
 
 let filterByTitleAndUrl = (feedArr) => {
   return filterFeedByUrl(filterFeedByTitle(feedArr));
@@ -88,7 +91,8 @@ let prettyDate = (date) => {
 }
 
 let setData = async () => {
-  let newsFeedJson = await getNewsFeed();
+
+  let newsFeedJson = await handleErrors(getNewsFeed());
   redisClient.set('news-feed', JSON.stringify(newsFeedJson))
   console.log('setData --> setting data again.')
 }
@@ -98,7 +102,7 @@ app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/getData", async (req, res) => {
     
-    let feed = await redisClientGet('news-feed').catch((err) => console.log('getData redisClientGet error: ', err))
+    let feed = await handleErrors(redisClientGet('news-feed'))
     
     res.json({status: 'ok', res: filterByTitleAndUrl(JSON.parse(feed))})
 })
