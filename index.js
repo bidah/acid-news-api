@@ -32,7 +32,7 @@ redisClient.on('ready', async () => {
 
   console.log("redisClient --> ready");
   await setData();
-  checkForNewItems();
+  checkForNewItems(); //every hour
 });
 
 var checkForNewItems = () => {
