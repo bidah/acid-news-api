@@ -11,6 +11,7 @@ const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 
 const redisClient = redis.createClient({host : 'localhost', port : 6379});
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
+const redisClientSet = promisify(redisClient.set).bind(redisClient)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,9 +28,11 @@ let handleErrors = (fn) => fn.catch((e) => console.log('promise error: ', e))
 
 app.listen(3001, () => console.log("Server ready"));
 
-redisClient.on('ready',() => {
-  console.log("Redis is ready");
-  setData();
+redisClient.on('ready', async () => {
+
+  console.log("redisClient --> ready");
+  await setData();
+  checkForNewItems();
 });
 
 var checkForNewItems = () => {
@@ -83,20 +86,10 @@ let getNewsFeed = async () => {
   )
 }
 
-let prettyDate = (date) => {
-
-  return moment(date).calendar(null, {
-    sameDay: 'h\:mm a',
-    lastDay: '[Yesterday]',
-    lastWeek: 'MMM DD',
-    sameElse: 'MMM DD'
-  });
-}
-
 let setData = async () => {
 
   let newsFeedJson = await handleErrors(getNewsFeed());
-  redisClient.set('news-feed', JSON.stringify(newsFeedJson))
+  await redisClientSet('news-feed', JSON.stringify(newsFeedJson))
   console.log('setData --> setting data again.')
 }
 
