@@ -89,18 +89,20 @@ let getNewsFeed = async () => {
 let setData = async () => {
 
   let newsFeedJson = await handleErrors(getNewsFeed());
-  await redisClientSet('news-feed', JSON.stringify(newsFeedJson))
-  console.log('setData --> setting data again.')
+  await handleErrors(
+    redisClientSet('news-feed', JSON.stringify(newsFeedJson))
+  )
+  console.log('setData --> setting data again at: ', new Date)
 }
 
 // routes
 app.get("*/health", (req, res) => res.sendStatus(200));
 
 app.get("*/getData", async (req, res) => {
-    
-    let feed = await handleErrors(redisClientGet('news-feed'))
-    
-    res.json({status: 'ok', res: filterByTitleAndUrl(JSON.parse(feed))})
+
+  let feed = await handleErrors(redisClientGet('news-feed'))
+
+  res.json({status: 'ok', res: filterByTitleAndUrl(JSON.parse(feed))})
 })
 
 console.log('process env: ', process.env.NODE_ENV)
