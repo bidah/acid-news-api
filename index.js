@@ -80,17 +80,17 @@ app.get("*/getData", async (req, res) => {
   res.json({status: 'ok', res: filter({item: feed, byTitle: true, byUrl: true})})
 })
 
-app.get("*/item/points/:id", async (req, { props: {id} } = res) => {
+app.get("*/item/points/:id", async ({ params: {id} } = req, res) => {
 
   let redisPoints = await redisClientGet(id)
-
+  
   if (redisPoints != null)
     return res.json({status: 'ok', res: redisPoints})
-
+  
   let points = await fetch('http://hn.algolia.com/api/v1/items/' + id)
     .then(res => res.json())
     .then(resJson => resJson.points)
-
+  
   await redisClientSet(id, points, 'NX', 'EX', 300)
   redisPoints = await redisClientGet(id)
   res.json({status: 'ok', res: redisPoints})
