@@ -33,6 +33,7 @@ redisClient.on('ready', async () => {
   checkForNewItems(); //every hour
 });
 
+//TODO: check for new items every time we reload the home.
 var checkForNewItems = () => {
 
   setInterval(async () => {
