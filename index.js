@@ -1,10 +1,7 @@
 const bodyParser    = require("body-parser");
 const app           = require("express")();
 const fetch         = require("node-fetch");
-const path          = require('path');
-const moment        = require('moment');
 const redis         = require('redis');
-const mongo         = require("./mongo");
 const { promisify } = require('util');
 
 const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
