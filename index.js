@@ -24,7 +24,7 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
-let handleErrors = (fn) => fn.catch((e) => console.log('promise error: ', e))
+let handleErrors = (fn) => fn.catch((e) => console.log('Promise error: ', e))
 
 app.listen(3001, () => console.log("Server ready"));
 
@@ -82,7 +82,7 @@ let getNewsFeed = async () => {
   return await handleErrors(
     fetch(apiUrl)
       .then(res => res.json())
-      .then(resJson => resJson.hits)
+      .then(resJson => JSON.stringify(resJson.hits))
   )
 }
 
@@ -90,7 +90,7 @@ let setData = async () => {
 
   let newsFeedJson = await handleErrors(getNewsFeed());
   await handleErrors(
-    redisClientSet('news-feed', JSON.stringify(newsFeedJson))
+    redisClientSet('news-feed', newsFeedJson)
   )
   console.log('setData --> setting data again at: ', new Date)
 }
