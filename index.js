@@ -7,6 +7,9 @@ const redis       = require('redis');
 const mongo       = require("./mongo");
 const apiUrl      = 'http://hn.algolia.com/api/v1/search_by_date?query=nodejs'
 const redisClient = redis.createClient({host : 'localhost', port : 6379});
+const { promisify } = require('util');
+
+const redisClientGet = promisify(redisClient.get)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,16 +29,22 @@ app.all("/*", function(req, res, next) {
 app.listen(3001, () => console.log("Server ready"));
 
 redisClient.on('ready',() => {
- console.log("Redis is ready");
- redisClient.set('testing', JSON.stringify({one: 1}))
+  console.log("Redis is ready");
+  setData();
 });
 
-(function checkForNewItems() {
-  setInterval(async ()=> {
-    let jsonRes = await fetch(apiUrl).then(res => res.json());
-    await mongo.setNewItems(jsonRes.hits);
+var checkForNewItems = () => {
+  setInterval(async () => {
+
+    let apiResNewsFeed = await fetch(apiUrl).then(res => res.json());
+    let redisNewsFeed = await redisClientGet('news-feed')
+
+    if (JSON.stringify(jsonRes) != redisNewsFeed)
+      setData();
+
   }, 3600000)
-})()
+}
+
 
 let filterByTitleAndUrl = (feedArr) => {
   return filterFeedByUrl(filterFeedByTitle(feedArr));
@@ -72,7 +81,6 @@ let getNewsFeed = async () => {
   return jsonRes.hits;
 }
 
-
 let prettyDate = (date) => {
 
   return moment(date).calendar(null, {
@@ -83,50 +91,18 @@ let prettyDate = (date) => {
   });
 }
 
-
-let setData = () => {
-  var counter = 0;
-  return async function () {
-    if(counter) return Promise.resolve('ok');
-    let newsFeedJson    = await getNewsFeed();
-    let newsFeedFromDb  = await mongo.setInitial(newsFeedJson)
-    counter++
-    console.log('set data only once')
-  }
+let setData = async () => {
+  let newsFeedJson = await getNewsFeed();
+  redisClient.set('news-feed', JSON.stringify(newsFeedJson))
+  console.log('setData --> setting data again.')
 }
 
 // routes
 app.get("*/health", (req, res) => res.sendStatus(200));
 
-app.get("*/setData", async (req, res) => {
-
-  let newsFeedJson    = await getNewsFeed();
-  let newsFeedFromDb  = await mongo.setInitial(newsFeedJson)
-
-  if (typeof newsFeedFromDb == "string")
-    return res.json({ status: "error", msg: newsFeedFromDb });
-
-  res.json({ status: "ok", msg: "data inserted to db", "data": newsFeedFromDb.ops });
-});
-
-app.get("*/delete/:itemId", async (req, res) => {
-
-    await mongo.deleteItem(req.params.itemId).catch(err => {
-      console.log('error in deleteItem --> ', err)
-    })
-
-    res.redirect('/')
-})
-
-let refSetData = setData()
 app.get("*/getData", async (req, res) => {
     
-    await refSetData();
-
-    let feed = await mongo.getFeed().catch(err => {
-      console.log('error in getFeed --> ', err)
-    });
-
+    let feed = await redisClientGet('news-feed')
     res.json({status: 'ok', res: filterByTitleAndUrl(feed)})
 })
 
