@@ -24,7 +24,13 @@ app.all("/*", function(req, res, next) {
 
 app.listen(3001, () => console.log("Server ready"));
 
-let handleErrors = (fn) => fn.catch((e) => console.log('Promise error: ', e))
+let handleErrors = (fn) => fn.catch((e) => {
+  console.log('Promise error: ', e)
+  return {
+    status: 'error',
+    msg: e
+  }
+})
 
 redisClient.on('ready', async () => {
 
@@ -87,9 +93,10 @@ app.get("*/item/points/:id", async ({ params: {id} } = req, res) => {
   if (redisPoints != null)
     return res.json({status: 'ok', res: redisPoints})
   
-  let points = await fetch('http://hn.algolia.com/api/v1/items/' + id)
+  let points = await handleErrors(fetch('http://hn.algolia.com/api/v1/items/' + id))
     .then(res => res.json())
     .then(resJson => resJson.points)
+
   
   await redisClientSet(id, points, 'NX', 'EX', 300)
   redisPoints = await redisClientGet(id)
