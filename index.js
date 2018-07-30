@@ -5,7 +5,7 @@ const redis         = require('redis');
 const { promisify } = require('util');
 const filter        = require('./filterFeed');
 
-const apiUrl        = 'http://hn.algolia.com/api/v1/search_by_date?query=startup'
+const apiUrl        = 'http://hn.algolia.com/api/v1/search?query=startup'
 
 const redisClient    = redis.createClient({host : 'localhost', port : 6379});
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
