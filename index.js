@@ -5,7 +5,7 @@ const redis         = require('redis');
 const { promisify } = require('util');
 const filter        = require('./filterFeed');
 
-const apiUrl        = 'http://hn.algolia.com/api/v1/search?query=startup'
+const apiUrl        = 'http://hn.algolia.com/api/v1/search?query=startups'
 
 const redisClient    = redis.createClient({host : 'localhost', port : 6379});
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
@@ -15,9 +15,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all("/*", function(req, res, next) {
+  res.setHeader(
+    "X-AUTH-TOKEN",
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Headers, x-auth-token, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+  );
 
   next();
 });
@@ -102,6 +112,23 @@ app.get("*/item/points/:id", async ({ params: {id} } = req, res) => {
   redisPoints = await redisClientGet(id)
   res.json({status: 'ok', res: redisPoints})
 })
+
+// app.post("*/item/setReadLater", async ({ body: { user, itemId } } = req, res) => {
+//
+//   let redisUser = await redisClientGet(user)
+//   if(redisUser == null)
+//     await redisClientSet(user, '[]')
+//
+//   let userList = await redisClientGet(user)
+//     .then(list => JSON.parse(list))
+//     .then(listArr => [...listArr, itemId])
+//     .then(listArr => JSON.stringify(listArr))
+//
+//   await redisClientSet(redisUser, userList)
+//  
+//   res.json({status: 'ok', res: 'readList has been saved'})
+// })
+//
 
 console.log('process env: ', process.env.NODE_ENV)
 
