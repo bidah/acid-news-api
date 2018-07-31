@@ -88,7 +88,9 @@ let getNewsFeed = async () => {
 
 let setData = async () => {
 
+  console.log('on SetData before')
   let newsFeedJson = await handleErrors(getNewsFeed());
+  console.log('on SetData after', newsFeedJson)
 
   await handleErrors(
     redisClientSet('news-feed', newsFeedJson)
