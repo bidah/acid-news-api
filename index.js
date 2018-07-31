@@ -4,7 +4,7 @@ const fetch         = require("node-fetch");
 const redis         = require('redis');
 const { promisify } = require('util');
 const filter        = require('./filterFeed');
-const apiUrl        = 'http://hn.algolia.com/api/v1/search?query=startups'
+const apiUrl        = 'https://hn.algolia.com/api/v1/search?query=startups'
 var redisClient;
 
 if (process.env.REDISTOGO_URL) {
