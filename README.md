@@ -11,7 +11,7 @@ npm install
 npm start
 ```
 
-The API will be available on your localhost on port 3001.
+The API will be available on your localhost on port 5000.
 
 
 
