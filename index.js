@@ -30,7 +30,7 @@ app.all("/*", function(req, res, next) {
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type"
   );
-
+  res.setHeader('Content-Type', 'text/html')
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
@@ -88,9 +88,7 @@ let getNewsFeed = async () => {
 
 let setData = async () => {
 
-  console.log('on SetData before')
   let newsFeedJson = await handleErrors(getNewsFeed());
-  console.log('on SetData after', newsFeedJson)
 
   await handleErrors(
     redisClientSet('news-feed', newsFeedJson)
@@ -142,5 +140,4 @@ app.get("*/item/points/:id", async ({ params: {id} } = req, res) => {
 // })
 //
 
-console.log('process env: ', process.env.NODE_ENV)
 
