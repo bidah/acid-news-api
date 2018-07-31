@@ -32,7 +32,7 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
-app.listen(3001, () => console.log("Server ready"));
+app.listen(5000, () => console.log("Server ready"));
 
 let handleErrors = (fn) => fn.catch((e) => {
   console.log('Promise error: ', e)
