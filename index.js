@@ -42,7 +42,7 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
-app.listen(5000, () => console.log("Server ready"));
+app.listen(process.env.PORT || 5000, () => console.log("Server ready"));
 
 let handleErrors = (fn) => fn.catch((e) => {
   console.log('Promise error: ', e)
