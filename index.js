@@ -4,10 +4,20 @@ const fetch         = require("node-fetch");
 const redis         = require('redis');
 const { promisify } = require('util');
 const filter        = require('./filterFeed');
-
 const apiUrl        = 'http://hn.algolia.com/api/v1/search?query=startups'
+var redisClient;
 
-const redisClient    = redis.createClient({host : 'localhost', port : 6379});
+if (process.env.REDISTOGO_URL) {
+
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  redisClient = redis.createClient(rtg.port, rtg.hostname);
+
+  redis.auth(rtg.auth.split(":")[1]);
+} else {
+
+  redisClient = redis.createClient();
+}
+
 const redisClientGet = promisify(redisClient.get).bind(redisClient)
 const redisClientSet = promisify(redisClient.set).bind(redisClient)
 
